@@ -1,5 +1,5 @@
 #include "mbed.h"
-#define NB_BIT 8 // bit number 
+#define NB_BIT 8 // bit used
 
 //              Byte{LSB         ...        MSB}
 PinName PIN[NB_BIT]={D3,D4,D5,D6,D7,D11,D12,D13}; //Connection to DAC0800
@@ -97,24 +97,7 @@ void RampNeg(float pente,float pas){ // a completer
     EnvoiBit(0);//reinitialisation
 
 }
-void test1(){
-    unsigned char valeur=0; // type sur 1 octet -> 0 à 255
-    init_gpioDAC();
-    while (1){
-        valeur=~valeur;
-        EnvoiBit(valeur);      
-        wait_ms(10);
-    }    
-}
-void test3(){
-    init_gpioDAC();
-    float pente = 10, pas= 0.1;
-    bool sens=1; //0: ramp decreasing ; 1 ramp increasing
-    while(1) {
-        ramp(pente,pas,sens);
-        wait_ms(400);
-    }    
-}
+
 void ramp_01V(float pente,float pas, bool sens){
 
     float t=0;
@@ -132,15 +115,6 @@ void ramp_01V(float pente,float pas, bool sens){
         old_valeur=valeur;
     }
     EnvoiBit(0);//reinitialisation
-}
-void test4(){ 
-    init_gpioDAC();
-    float pente = 15, pas= 0.1; // select the duration of the ramp with the variable "pente"
-    bool sens=1; //0: ramp decreasing ; 1 ramp increasing
-    while(1) {
-        ramp_01V(pente,pas,sens);
-        wait_ms(400);
-    }
 }
 
 float CalculPente(float Ampl_max, float Ampl_min, float duree){
@@ -165,9 +139,37 @@ unsigned char ValeurCNA_Tension(float Vmin, float vchoisi){
     }
     return result;
 }
+
+void test1(){
+    unsigned char valeur=0; // type sur 1 octet -> 0 à 255
+    init_gpioDAC();
+    while (1){
+        valeur=~valeur;
+        EnvoiBit(valeur);      
+        wait_ms(10);
+    }    
+}
+void test3(){
+    init_gpioDAC();
+    float pente = 10, pas= 0.1;
+    bool sens=1; //0: ramp decreasing ; 1 ramp increasing
+    while(1) {
+        ramp(pente,pas,sens);
+        wait_ms(400);
+    }    
+}
+void test4(){ 
+    init_gpioDAC();
+    float pente = 15, pas= 0.1; // select the duration of the ramp with the variable "pente"
+    bool sens=1; //0: ramp decreasing ; 1 ramp increasing
+    while(1) {
+        ramp_01V(pente,pas,sens);
+        wait_ms(400);
+    }
+}
 void test5(){
     printf("****************************************************** \n");
-    printf("calcul pente: %f \n", CalculPente(1,0,0.02)); // pente de 0V a 1V en 20ms -> 50V/s
+    printf("calcul pente: %f \n", CalculPente(1,0,0.02)); 
     printf("calcul quantum: %f \n", Calcul_Quantum(8.2,8));
     printf("valeur choisie: %d \n",ValeurCNA_Tension(0, 6.5));
     printf("****************************************************** \n");
@@ -179,10 +181,10 @@ void test6(){
     printf("****************************************************** \n");
     wait(1);
     init_gpioDAC();
-    float pente = 0.495f, pas= 0.1f;
-    bool sens=1; //0: pente decroissante ; 1 pente croissante
+    float pente = 0.495f, pas= 0.1f; // Value validate with the measure in the scope (no linearity)
+    bool sens=1; //0: decreasing ; 1 : increasing
     while(1) {
-        ramp_01V(pente,pas,sens); // 128 pour 0 V
+        ramp_01V(pente,pas,sens); 
         wait_ms(400);
     }
 }
